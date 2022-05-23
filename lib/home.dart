@@ -30,6 +30,8 @@ class _HomeState extends State<Home> {
     Tflite.close();
   }
 
+  //このメソッド→すると、画像に対して分類モデルが実行されます。
+  //numResultsは、私たちが持っているクラスの数であり、変更を保存するためにsetStateを追加します。
   classifyImage(File image) async {
     //this function runs the model on the image
     var output = await Tflite.runModelOnImage(
@@ -45,12 +47,14 @@ class _HomeState extends State<Home> {
     });
   }
 
+  //この関数はモデルをロードするので、initSメソッドの中に入れます。
   loadModel() async {
     //this function loads our model
     await Tflite.loadModel(
         model: 'assets/model.tflite', labels: 'assets/labels.txt');
   }
 
+  //この機能は、カメラから画像を取得するために使用されます。
   pickImage() async {
     //this function to grab the image from camera
     var image = await picker.getImage(source: ImageSource.camera);
@@ -62,6 +66,7 @@ class _HomeState extends State<Home> {
     classifyImage(_image);
   }
 
+  //この機能は、ユーザーのギャラリーから画像を取得するために使用されます。
   pickGalleryImage() async {
     //this function to grab the image from gallery
     var image = await picker.getImage(source: ImageSource.gallery);
