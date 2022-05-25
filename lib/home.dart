@@ -11,6 +11,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool _loading = true;
   late File _image;
+  late List Data;
   var _output;
   final picker = ImagePicker(); //allows us to pick image from gallery or camera
 
@@ -32,14 +33,15 @@ class _HomeState extends State<Home> {
 
   //このメソッド→すると、画像に対して分類モデルが実行されます。
   //numResultsは、私たちが持っているクラスの数であり、変更を保存するためにsetStateを追加します。
-  classifyImage(File image) async {
+  classifyImage(List Data) async {
     //this function runs the model on the image
-    var output = await Tflite.runModelOnImage(
-      path: image.path,
-      numResults: 36, //the amout of categories our neural network can predict
+    var output = await Tflite.runModelOnBinary(
+      binary: binary,
+      numResults: 5, //the amout of categories our neural network can predict
       threshold: 0.5,
-      imageMean: 127.5,
-      imageStd: 127.5,
+      //imageMean: 127.5,
+      //imageStd: 127.5,
+      asynch: true,
     );
     setState(() {
       _output = output;
@@ -51,7 +53,7 @@ class _HomeState extends State<Home> {
   loadModel() async {
     //this function loads our model
     await Tflite.loadModel(
-        model: 'assets/model.tflite', labels: 'assets/labels.txt');
+        model: 'assets/nk225_model.tflite', labels: 'assets/labels.txt');
   }
 
   //この機能は、カメラから画像を取得するために使用されます。
@@ -63,7 +65,7 @@ class _HomeState extends State<Home> {
     setState(() {
       _image = File(image.path);
     });
-    classifyImage(_image);
+    classifyImage(Data); //このメソッド→すると、画像に対して分類モデルが実行されます。
   }
 
   //この機能は、ユーザーのギャラリーから画像を取得するために使用されます。

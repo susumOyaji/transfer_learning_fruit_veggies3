@@ -80,6 +80,15 @@ def build_LSTMmodel():
 #model.summary()
 
 
+def create_model(self) :
+    model = Sequential()
+    model.add(LSTM(self.hidden_neurons, \
+              batch_input_shape=(None, self.length_of_sequences, self.in_out_neurons), \
+              return_sequences=False))
+    model.add(Dense(self.in_out_neurons))
+    model.add(Activation("linear"))
+    model.compile(loss="mape", optimizer="adam")
+    return model
 
 
 
@@ -245,6 +254,12 @@ tflite_model = converter.convert()
 open("saved_model/model.tflite", "wb").write(tflite_model)
 
 
+
+import tensorflow as tf
+converter = tf.lite.TFLiteConverter.from_keras_model_file('model.h5',custom_objects= 
+{'top_2_accuracy':top_2_accuracy,'top_3_accuracy':top_3_accuracy}) 
+tfmodel = converter.convert() 
+open ("model.tflite" , "wb") .write(tfmodel)
 
 
 '''
