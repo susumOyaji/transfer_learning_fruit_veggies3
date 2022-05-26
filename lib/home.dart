@@ -33,18 +33,17 @@ class _HomeState extends State<Home> {
 
   //このメソッド→すると、画像に対して分類モデルが実行されます。
   //numResultsは、私たちが持っているクラスの数であり、変更を保存するためにsetStateを追加します。
-  classifyImage(List Data) async {
+  classifyImage(File image) async {
     //this function runs the model on the image
-    var output = await Tflite.runModelOnBinary(
-      binary: binary,
-      numResults: 5, //the amout of categories our neural network can predict
+    var output = await Tflite.runModelOnImage(
+      path: image.path,
+      numResults: 36, //the amout of categories our neural network can predict
       threshold: 0.5,
-      //imageMean: 127.5,
-      //imageStd: 127.5,
-      asynch: true,
+      imageMean: 127.5,
+      imageStd: 127.5,
     );
     setState(() {
-      _output = output;
+      //_output = output;
       _loading = false;
     });
   }
@@ -65,7 +64,7 @@ class _HomeState extends State<Home> {
     setState(() {
       _image = File(image.path);
     });
-    classifyImage(Data); //このメソッド→すると、画像に対して分類モデルが実行されます。
+    classifyImage(_image); //このメソッド→すると、画像に対して分類モデルが実行されます。
   }
 
   //この機能は、ユーザーのギャラリーから画像を取得するために使用されます。
